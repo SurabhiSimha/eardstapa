@@ -680,7 +680,7 @@ function onFix(g) { onPos(g.coords.latitude, g.coords.longitude, g.coords.accura
 function startNav() {
   if (!navigator.geolocation) { geoErr(); return; }
   nav.on = true; nav.off = 0;
-  $('follow').textContent = '■ Stop following'; $('follow').classList.add('on');
+  $('follow').textContent = '■ Stop GPS navigation'; $('follow').classList.add('on');
   setNav('Finding you…', '');
   nav.watch = navigator.geolocation.watchPosition(onFix, geoErr, GEO);
   keepAwake();
@@ -690,7 +690,7 @@ function stopNav() {
   if (nav.watch !== null) navigator.geolocation.clearWatch(nav.watch);
   nav.watch = null;
   if (nav.lock) { nav.lock.release().catch(() => {}); nav.lock = null; }
-  $('nav').hidden = true; $('follow').textContent = '📍 Follow me along Wander'; $('follow').classList.remove('on');
+  $('nav').hidden = true; $('follow').textContent = '🧭 Start GPS navigation'; $('follow').classList.remove('on');
   document.querySelectorAll('#steps li.now').forEach((el) => el.classList.remove('now'));
 }
 
