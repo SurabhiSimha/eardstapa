@@ -480,7 +480,7 @@ def build(city):
             if has_sw:
                 sw += 0.25
             elif sidewalk in ("no", "none"):
-                sw -= 0.2
+                sw -= 0.05 if hw in ("residential", "living_street", "service") else 0.2
             if spd:
                 adj = 0.1 if spd <= 30 else -0.15 if spd >= 60 else 0
                 sw += adj

@@ -424,6 +424,7 @@ function draw(fast, alive) {
     if (rest > 0) chips.push(`<span class="chip count">${emoji} ${cap && named.length ? '+' : ''}${rest} ${rest === 1 ? one : many}</span>`);
     if (!cap) list.slice(0, 3).forEach((h) => shown.push(h)); else generic.slice(0, 3).forEach((h) => shown.push(h));
   }
+  $('hlSum').textContent = hs.length ? `Along the way · ${hs.length} thing${hs.length === 1 ? '' : 's'}` : 'Along the way';
   $('highlights').innerHTML = chips.join('') || '<span class="chip count">Nothing mapped right along this one — “Get lost” looks further afield</span>';
   const markers = shown.slice(0, 24).map((h) =>
     L.marker([h.lat, h.lon], { icon: L.divIcon({ className: '', html: `<div class="poi">${KIND[h.kind][0]}</div>`, iconSize: [26, 26], iconAnchor: [13, 13] }) })
