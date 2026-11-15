@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Eardstapa</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#17695a">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Eardstapa">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="vendor/leaflet.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="map"></div>
+
+<aside id="panel">
+  <header>
+    <div class="brand"><span class="logo">✦</span> Eardstapa <span class="beta">BETA</span></div>
+    <div class="sub">“Earth-stepper” — directions for wanderers</div>
+  </header>
+
+  <div class="row seg" id="cityTabs"></div>
+
+  <div class="row seg" id="modeTabs">
+    <button data-mode="walk" class="on">🚶 Walk</button>
+    <button data-mode="bike">🚲 Bike</button>
+  </div>
+
+  <div class="places">
+    <div class="field">
+      <span class="dot from"></span>
+      <input id="from" placeholder="Start — type a place or click the map" autocomplete="off">
+      <button id="useLoc" title="Start from where I am">◎</button>
+      <div class="suggest" id="fromSuggest"></div>
+    </div>
+    <div class="field">
+      <span class="dot to"></span>
+      <input id="to" placeholder="Destination" autocomplete="off">
+      <div class="suggest" id="toSuggest"></div>
+    </div>
+    <button id="swap" title="Swap start and destination">⇅</button>
+  </div>
+
+  <div class="section">
+    <div class="label">Prefer</div>
+    <div class="prefs" id="prefs">
+      <label><input type="checkbox" data-pref="nature" checked> 🌳 Parks &amp; trees</label>
+      <label><input type="checkbox" data-pref="water" checked> 🌊 Water</label>
+      <label><input type="checkbox" data-pref="life" checked> ☕ Cafés &amp; street life</label>
+      <label><input type="checkbox" data-pref="culture" checked> 🎨 Art &amp; heritage</label>
+      <label><input type="checkbox" data-pref="calm" checked> 🤫 Quiet streets</label>
+      <label><input type="checkbox" data-pref="safe" checked> 🛡️ Safer from traffic</label>
+      <label><input type="checkbox" data-pref="night"> 🌙 After dark (lit streets)</label>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="label">How far out of the way?</div>
+    <div class="row seg small" id="budget">
+      <button data-b="0.15">A little</button>
+      <button data-b="0.35" class="on">Some</button>
+      <button data-b="0.7">A lot</button>
+      <button data-b="9">Get lost</button>
+    </div>
+  </div>
+
+  <div id="result" hidden>
+    <div class="routecard alive">
+      <div class="rc-title"><span class="swatch"></span> Wander</div>
+      <div class="rc-time" id="aliveTime"></div>
+      <div class="rc-sub" id="aliveSub"></div>
+    </div>
+    <div class="routecard fast">
+      <div class="rc-title"><span class="swatch"></span> Hurry</div>
+      <div class="rc-time" id="fastTime"></div>
+      <div class="rc-sub" id="fastSub"></div>
+    </div>
+    <button id="follow">📍 Follow me along Wander</button>
+    <details id="dirBox"><summary id="dirSum">Directions</summary><ol id="steps"></ol></details>
+    <div class="bars" id="bars"></div>
+    <div class="label">Along the way</div>
+    <div id="highlights"></div>
+    <button id="surprise">🎲 Surprise me with another</button>
+  </div>
+  <div id="hint">Click the map to drop a start, then a destination. Drag the pins to adjust.</div>
+
+  <label class="overlayToggle"><input type="checkbox" id="heat"> Show where the wandering is good</label>
+  <div class="pinrow">
+    <button id="pinBtn">📌 Drop a pin</button>
+    <button id="pinExport" class="link">Export pins</button>
+    <label class="link">Import<input type="file" id="pinImport" accept=".json,application/json" hidden></label>
+  </div>
+  <div class="pinrow">
+    <button id="circleBtn" class="link">👥 Share pins with a circle</button>
+    <span id="circleStatus"></span>
+  </div>
+  <div id="circleForm" class="pinrow" hidden>
+    <input id="circleCode" placeholder="Circle code (8+ characters)" autocomplete="off" autocapitalize="off">
+    <button id="circleJoin">Join</button>
+  </div>
+  <div id="legend" hidden><span>hurry</span><i></i><span>wander</span></div>
+  <footer id="foot"></footer>
+</aside>
+
+<div id="nav" hidden><div><div id="navText"></div><div id="navSub"></div></div><button id="navStop">Stop</button></div>
+<div id="loading">Loading the city…</div>
+
+<script src="vendor/leaflet.js"></script>
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
