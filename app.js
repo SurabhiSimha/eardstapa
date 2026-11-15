@@ -2,7 +2,7 @@
    Everything (graph, scores, routing) runs in the browser from a fixed OSM snapshot. */
 'use strict';
 
-const CITIES = ['vancouver', 'guelph'];   // add 'metro-vancouver' once data/metro-vancouver.* is built
+const CITIES = ['vancouver', 'metro-vancouver', 'guelph'];
 const CITY_TAB = { vancouver: 'Vancouver', 'metro-vancouver': 'Greater Van', guelph: 'Guelph' };
 const F_WALK = 1, F_BIKE_FWD = 2, F_BIKE_BACK = 4, F_DISMOUNT = 8, F_STEPS = 16;
 const SPEED = { walk: 4.8 / 3.6, steps: 2.4 / 3.6, bike: 16 / 3.6, dismount: 4.5 / 3.6 };
