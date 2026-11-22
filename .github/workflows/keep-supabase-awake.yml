@@ -1,30 +1,37 @@
-# Free Supabase projects are paused after about a week without database activity.
-# Eardstapa only talks to the database when someone uses a pin circle, so this asks
-# it for pins every three days to keep shared pins available.
-# The publishable key is public by design (it is also in config.js); the circle
-# asked for here is a dummy one with no pins in it.
+# Free Supabase projects are paused when the database sees too little activity.
+# Eardstapa only talks to the database when someone uses a pin circle, so once a day
+# this adds a pin to a dummy circle, reads it back and deletes it again: real writes
+# and reads, not just a connection.
+# The publishable key is public by design (it is also in config.js).
 name: Keep Supabase awake
 
 on:
   schedule:
-    - cron: "17 9 */3 * *"   # 09:17 UTC every third day
+    - cron: "17 9 * * *"     # 09:17 UTC every day
   workflow_dispatch:          # lets you run it by hand from the Actions tab
+
+env:
+  URL: https://xgcgiywvuqnwolhjzudz.supabase.co/rest/v1/rpc
+  KEY: sb_publishable_mYp_Ob7fKFDFhQ1vBN8Hmg_gq6fxcJS
+  CIRCLE: "0000000000000000000000000000000000000000000000000000000000000000"
 
 jobs:
   ping:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - name: Ask the database for pins
+      - name: Write, read and delete a test pin
         run: |
-          code=$(curl -s -o response.txt -w "%{http_code}" --retry 3 --retry-delay 20 -m 30 \
-            -X POST "https://xgcgiywvuqnwolhjzudz.supabase.co/rest/v1/rpc/get_pins" \
-            -H "apikey: sb_publishable_mYp_Ob7fKFDFhQ1vBN8Hmg_gq6fxcJS" \
-            -H "Authorization: Bearer sb_publishable_mYp_Ob7fKFDFhQ1vBN8Hmg_gq6fxcJS" \
-            -H "Content-Type: application/json" \
-            -d '{"p_circle":"0000000000000000000000000000000000000000000000000000000000000000"}')
-          echo "HTTP $code: $(head -c 200 response.txt)"
-          if [ "$code" != "200" ]; then
-            echo "::error::Supabase did not answer normally. If the project was paused, unpause it in the Supabase dashboard."
-            exit 1
-          fi
+          call() {
+            code=$(curl -s -o out.json -w "%{http_code}" --retry 3 --retry-delay 20 -m 30 -X POST "$URL/$1" \
+              -H "apikey: $KEY" -H "Authorization: Bearer $KEY" -H "Content-Type: application/json" -d "$2")
+            echo "$1 -> HTTP $code: $(head -c 150 out.json)"
+            case "$code" in 2*) ;; *)
+              echo "::error::Supabase did not answer normally. If the project was paused, restore it in the Supabase dashboard."
+              exit 1 ;;
+            esac
+          }
+          call add_pin "{\"p_circle\":\"$CIRCLE\",\"p_lat\":0,\"p_lon\":0,\"p_emoji\":\"x\",\"p_note\":\"keep-alive\"}"
+          id=$(jq -r . out.json)
+          call get_pins "{\"p_circle\":\"$CIRCLE\"}"
+          call delete_pin "{\"p_circle\":\"$CIRCLE\",\"p_id\":\"$id\"}"
